@@ -2,17 +2,17 @@ public with sharing class GoogleApiIntegration {
     
 
    @future(callout=true)
-   public static void FetchContact(String contactId){
+   public static void FetchContact(String contactId,String apiKey){
 
     List<Contact>listofContact=[select Id, FirstName,LastName,Phone,Email from Contact where Id=:contactId];
 
     for(Contact c:listofContact){
 
-        SendApiRequest(c.Id,c.FirstName,c.LastName,c.Phone,c.Email);
+        SendApiRequest(c.Id,c.FirstName,c.LastName,c.Phone,c.Email,apiKey);
     }
    } 
 
-   public static Void SendApiRequest(String Id, String FirstName,String LastName,String Phone,String EmailAddress){
+   public static Void SendApiRequest(String Id, String FirstName,String LastName,String Phone,String EmailAddress,String apiKey){
 
     ContactInformation con=new ContactInformation();
     con.name.add(new ContactInformation.Name(FirstName+' '+LastName));
@@ -20,7 +20,7 @@ public with sharing class GoogleApiIntegration {
     con.phone.add(new ContactInformation.Phone(Phone));
     Http http=new Http();
     HttpRequest request = new HttpRequest();
-   // request.setHeader('Authorization', 'Bearer '+apiKey);
+    request.setHeader('Authorization', 'Bearer '+apiKey);
     request.setHeader('Content-Type', 'application/json');
     request.setHeader('Accept', 'application/json');
     request.setBody(JSON.serialize(con));
